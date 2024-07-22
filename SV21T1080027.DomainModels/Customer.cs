@@ -3,7 +3,7 @@
     public class Customer
     {
         /// <summary>
-        ///     
+        /// Thông tin khách hàng    
         /// </summary>
         public int CustomerId { get; set; }
         public String CustomerName { get; set; } = String.Empty;
