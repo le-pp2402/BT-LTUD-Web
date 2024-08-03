@@ -2,7 +2,7 @@
 
 namespace SV21T1080027.Web.Controllers
 {
-    public class CategoryController : Controller
+    public class EmployeeController : Controller
     {
         public IActionResult Index()
         {
@@ -11,17 +11,15 @@ namespace SV21T1080027.Web.Controllers
 
         public IActionResult Create()
         {
-            ViewBag.Title = "Tạo loại hàng";
-            return View("Edit"); 
+            ViewBag.Title = "Thêm nhân viên";
+            return View("Edit");
         }
 
         public IActionResult Edit(int id = 0)
         {
-
-            ViewBag.Title = "Chỉnh sửa loại hàng";
+            ViewBag.Title = "Chỉnh sửa nhân viên";
             return View();
         }
-
         public IActionResult Delete(int id = 0)
         {
             return View();

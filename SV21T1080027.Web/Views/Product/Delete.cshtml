@@ -1,0 +1,88 @@
+﻿@{
+    ViewBag.Title = "Xoá sản phẩm";
+}
+<div class="box box-primary">
+
+    <div class="box-header with-border ">
+        <h3 class="box-title">Thông tin mặt hàng</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="" data-original-title="Collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="box-body">
+        <form class="form-horizontal" action="#" method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Tên mặt hàng:</label>
+                <div class="col-sm-10">
+                    <p>Laptop Apple MacBook Air 13 inch M1 8GB/256GB (MGN63SA/A)</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Mô tả:</label>
+                <div class="col-sm-10">
+                    <p>Laptop Apple MacBook Air 13 inch M1 8GB/256GB (MGN63SA/A) moo tar </p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Loại hàng:</label>
+                <div class="col-sm-10">
+                    <p>Laptop</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Nhà cung cấp:</label>
+                <div class="col-sm-10">
+                    <p>Apple</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Đơn vị tính:</label>
+                <div class="col-sm-10">
+                    <p>Cái</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Giá hàng:</label>
+                <div class="col-sm-10">
+                    <p>20,000,000</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-sm-2">Trạng thái</label>
+                <div class="col-sm-10">
+                    <p>Hiện đang được bán</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-sm-10">
+                    <input type="hidden" name="Photo" value="macbook.jpg" />
+                    <img id="Photo" src="~/images/products/macbook.jpg" class="img img-bordered" style="width:200px" />
+                </div>
+            </div>
+
+            <div class="form-group text-right">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash-o"></i> Xoá
+                    </button>
+                    <a class="btn btn-warning" href="~/Product">
+                        Quay lại
+                    </a>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+</div>

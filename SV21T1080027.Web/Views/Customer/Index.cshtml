@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<SV21T1080027.DomainModels.Customer>
+@{
     ViewBag.Title = "Quản lý khách hàng";
 }
 
@@ -27,7 +28,7 @@
         </form>
         <!-- Hiển thị dữ liệu -->
         <p style="margin-top:10px"> 
-            Có <strong>100</strong> khách hàng trong tổng số <strong>10</strong> trang 
+            Có <strong>@ViewBag.RowCount</strong> khách hàng trong tổng số <strong>@ViewBag.PageCount</strong> trang 
         </p>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
@@ -44,21 +45,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 1; i <= 10; i++) 
+                    @foreach(var item in Model)
                     {
                         <tr>
-                            <td>Lê Phi Phát</td>
-                            <td>Phát</td>
-                            <td>0899575969</td>
-                            <td>21t1080027@husc.edu.vn</td>
-                            <td>77 Nguyễn Huệ </td>
-                            <td> Thừa Thiên Huế </td>
-                            <td></td>
+                            <td>@item.CustomerName</td>
+                            <td>@item.ContactName</td>
+                            <td>@item.Phone</td>
+                            <td>@item.Email</td>
+                            <td>@item.Address </td>
+                            <td>@item.Province </td>
+                            <td>@item.IsLocked</td>
                             <td class="text-right">
-                                <a href="~/Customer/Edit/123" class="btn btn-xs btn-info">
+                                <a href="~/Customer/Edit/@item.CustomerId" class="btn btn-xs btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="~/Customer/Delete/123" class="btn btn-xs btn-danger">
+                                <a href="~/Customer/Delete/@item.CustomerId" class="btn btn-xs btn-danger">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             </td>
@@ -71,11 +72,16 @@
         <div class="text-center">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    @for (int p = 1; p <= ViewBag.PageCount; p++)
+                    {
+                        if (p == ViewBag.page)
+                        {
+                            <li class="page-item active"><a class="page-link" href="~/Customer?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                        } else
+                        {
+                            <li class="page-item"><a class="page-link" href="~/Customer?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                        }
+                    }
                 </ul>
             </nav>
         </div>

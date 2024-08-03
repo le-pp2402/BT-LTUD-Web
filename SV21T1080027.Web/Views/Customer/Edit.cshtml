@@ -1,48 +1,64 @@
-﻿@{
-    ViewBag.Title = "Chỉnh sửa người dùng";
+﻿@using SV21T1080027.BusinessLayers
+@model Customer
+@{
+
 }
 <div class="box box-primary">
     <div class="box-body">
         <form action="~/Customer/Save" method="post">
+            <input type = "hidden" name="@nameof(Model.CustomerId)" value="@Model.CustomerId" />
             <div class="form-group">
                 <label class="form-label">Tên khách hàng: </label>
-                <input type="text" class="form-control" autofocus/>
+                <input type="text" class="form-control" name = "@nameof(Model.CustomerName)" value = "@Model.CustomerName" autofocus/>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Tên giao dịch: </label>
-                <input type="text" class="form-control" />
+                <input type="text" class="form-control" name="@nameof(Model.ContactName)" value="@Model.ContactName"/>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Điện thoại: </label>
-                <input type="text" class="form-control" />
+                <input type="text" class="form-control" name="@nameof(Model.Phone)" value="@Model.Phone"/>
             </div>
             
             <div class="form-group">
                 <label class="form-label">Email:</label>
-                <input type="email" class="form-control" />
+                <input type="email" class="form-control" name="@nameof(Model.Email)" value="@Model.Email"/>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Địa chỉ:</label>
-                <input type="text" class="form-control" />
+                <input type="text" class="form-control" name="@nameof(Model.Address)" value="@Model.Address"/>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Tỉnh/Thành</label>
-                <select class="form-control">
+                <select class="form-control" name="@nameof(Model.Province)">
                     <option value=""> --- Chọn tỉnh thành </option>
-                    <option value=""> TP Huế </option>
-                    <option value=""> Quảng Bình </option>
+                    @foreach (var province in CommonDataService.ListOfProvinces())
+                    {
+                        if (province.ProvinceName.Equals(Model.Province))
+                        {
+                            <option value ="@province.ProvinceName" selected>@province.ProvinceName</option>
+                        }   else
+                        {
+                            <option value="@province.ProvinceName">@province.ProvinceName</option>
+                        }
+                    }
                 </select>
             </div>
 
             <div class="form-group">
                 <label class="form-label">Trạng thái:</label>
                 <select class="form-control">
-                    <option value="false"> Khách hàng không bị khoá </option>
-                    <option value="true"> Khách hàng bị khoá </option>
+                    if (@Model.IsLocked) {
+                        <option value="false"> Khách hàng không bị khoá </option>
+                        <option value="true" selected> Khách hàng bị khoá </option>
+                    } else {
+                        <option value="false" selected> Khách hàng không bị khoá </option>
+                        <option value="true"> Khách hàng bị khoá </option>
+                    }
                 </select>
             </div>
 

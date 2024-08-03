@@ -11,10 +11,12 @@ namespace SV21T1080027.Web.Controllers
 
         public IActionResult Create()
         {
+            ViewBag.Title = "Tạo nhà cung cấp";
             return View("Edit");
         }
         public IActionResult Edit(int id = 0)
         {
+            ViewBag.Title = "Chỉnh sửa nhà cung cấp";
             return View();
         }
         public IActionResult Delete(int id = 0)
