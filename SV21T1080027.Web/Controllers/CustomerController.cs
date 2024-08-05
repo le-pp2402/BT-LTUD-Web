@@ -1,7 +1,7 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
+
 namespace SV21T1080027.Web.Controllers
 {
     public class CustomerController : Controller
@@ -28,7 +28,7 @@ namespace SV21T1080027.Web.Controllers
             ViewBag.Title = "Tạo khách hàng";
             Customer customer = new Customer()
             {
-                CustomerId = 0
+                CustomerID = 0
             };
             return View("Edit", customer);
         }
@@ -47,12 +47,12 @@ namespace SV21T1080027.Web.Controllers
         [HttpPost]
         public IActionResult Save(Customer customer) { 
             // TODO: Validate information of customer
-            if (customer.CustomerId == 0)
+            if (customer.CustomerID == 0)
             {
                 CommonDataService.AddCustomer(customer);
             } else
             {
-                Console.WriteLine("cap nhat id = " + customer.CustomerId + " " + customer.Province);
+                Console.WriteLine("cap nhat id = " + customer.CustomerID);
                 CommonDataService.UpdateCustomer(customer);
             }
             return RedirectToAction("Index");

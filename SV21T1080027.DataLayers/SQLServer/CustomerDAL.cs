@@ -1,8 +1,5 @@
 ﻿using Dapper;
 using SV21T1080027.DomainModels;
-using System.Data;
-using System.Net;
-using System.Numerics;
 
 namespace SV21T1080027.DataLayers.SQLServer
 {
@@ -44,7 +41,8 @@ namespace SV21T1080027.DataLayers.SQLServer
             int count = 0;
             using (var connection = OpenConnection())
             {
-                var sql = @"select count(*)
+                var sql = @"
+                        SELECT COUNT(*)
                         FROM Customers 
                         WHERE (CustomerName LIKE @searchValue) OR (ContactName LIKE @searchValue)";
                 var parameter = new {searchValue = $"%{searchValue}%"};
@@ -59,10 +57,10 @@ namespace SV21T1080027.DataLayers.SQLServer
             bool result = false;
             using (var connection = OpenConnection())
             {
-                var sql = @"DELETE FROM Customers WHERE CustomerId = @CustomerId";
+                var sql = @"DELETE FROM Customers WHERE CustomerID = @CustomerID";
                 var param = new
                 {
-                    CustomerId = id
+                    CustomerID = id
                 };
                 result = connection.Execute(sql, param, commandType: System.Data.CommandType.Text) > 0;
                 connection.Close();         
@@ -75,10 +73,10 @@ namespace SV21T1080027.DataLayers.SQLServer
             Customer? data = null;
             using (var connection = OpenConnection())
             {
-                var sql = @"SELECT * FROM Customers WHERE CustomerId = @CustomerId";
+                var sql = @"SELECT * FROM Customers WHERE CustomerID = @CustomerID";
                 var param = new
                 {
-                    CustomerId = id
+                    CustomerID = id
                 };
                 data = connection.QueryFirstOrDefault<Customer>(sql, param, commandType: System.Data.CommandType.Text);
             }
@@ -90,13 +88,13 @@ namespace SV21T1080027.DataLayers.SQLServer
             bool result = false;
             using (var connection = OpenConnection())
             {
-                var sql = @"IF EXISTS(SELECT * FROM Orders WHERE CustomerId = @CustomerId) 
+                var sql = @"IF EXISTS(SELECT * FROM Orders WHERE CustomerID = @CustomerID) 
                                 SELECT 1
                             ELSE
                                 SELECT 0";
                 var param = new
                 {
-                    CustomerId = id
+                    CustomerID = id
                 };
                 result = connection.ExecuteScalar<int>(sql, param, commandType: System.Data.CommandType.Text) > 0;
                 connection.Close();
@@ -144,11 +142,11 @@ namespace SV21T1080027.DataLayers.SQLServer
                                 Phone        = @Phone, 
                                 Email        = @Email, 
                                IsLocked      = @IsLocked
-                            WHERE CustomerId = @CustomerId";
+                            WHERE CustomerID = @CustomerID";
 
                 var param = new
                 {
-                    CustomerId = data.CustomerId,
+                    CustomerID = data.CustomerID,
                     CustomerName = data.CustomerName ?? "",
                     ContactName = data.ContactName ?? "",
                     Province = data.Province ?? "",

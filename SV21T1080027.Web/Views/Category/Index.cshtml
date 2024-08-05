@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<Category>
+@{
     ViewBag.Title = "Danh sách loại hàng";
 }
 
@@ -12,6 +13,7 @@
                        type="text"
                        class="form-control"
                        placeholder="Nhập loại hàng cần tìm"
+                       value="@ViewBag.SearchValue"
                        autofocus />
 
                 <div class="input-group-btn">
@@ -27,7 +29,7 @@
         </form>
         <!-- Hiển thị dữ liệu -->
         <p style="margin-top:10px">
-            Có <strong>100</strong> loại hàng trong tổng số <strong>10</strong> trang
+            Có <strong>@ViewBag.RowCount</strong> loại hàng trong tổng số <strong>@ViewBag.PageCount</strong> trang
         </p>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
@@ -39,33 +41,39 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 1; i <= 10; i++)
+                    @foreach (var elem in Model)
                     {
                         <tr>
-                            <td>Đồ ăn</td>
-                            <td>Các loại đồ ăn</td>
+                            <td>@elem.CategoryName</td>
+                            <td>@elem.Description</td>
                             <td class="text-right">
-                                <a href="~/Category/Edit/123" class="btn btn-xs btn-info">
+                                <a href="~/Category/Edit/@elem.CategoryID" class="btn btn-xs btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="~/Category/Delete/123" class="btn btn-xs btn-danger">
+                                <a href="~/Category/Delete/@elem.CategoryID" class="btn btn-xs btn-danger">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             </td>
                         </tr>
                     }
-
+                    
                 </tbody>
             </table>
         </div>
         <div class="text-center">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    @for (int p = 1; p <= ViewBag.PageCount; p++)
+                    {
+                        if (p == ViewBag.page)
+                        {
+                            <li class="page-item active"><a class="page-link" href="~/Category?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                        }
+                        else
+                        {
+                            <li class="page-item"><a class="page-link" href="~/Category?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                        }
+                    }
                 </ul>
             </nav>
         </div>

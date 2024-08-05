@@ -1,12 +1,11 @@
-﻿@using SV21T1080027.BusinessLayers
-@model Customer
+﻿@model Customer
 @{
 
 }
 <div class="box box-primary">
     <div class="box-body">
         <form action="~/Customer/Save" method="post">
-            <input type = "hidden" name="@nameof(Model.CustomerId)" value="@Model.CustomerId" />
+            <input type = "hidden" name="@nameof(Model.CustomerID)" value="@Model.CustomerID" />
             <div class="form-group">
                 <label class="form-label">Tên khách hàng: </label>
                 <input type="text" class="form-control" name = "@nameof(Model.CustomerName)" value = "@Model.CustomerName" autofocus/>

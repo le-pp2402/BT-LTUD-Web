@@ -1,44 +1,52 @@
-﻿@{
+﻿@model Supplier
+@{
     ViewBag.Title = "Xoá đơn vị cung cấp";
 }
 <div class="box box-danger">
     <div class="box-body">
-        <form action="~/Supplier/Save" method="post">
+        <form action="~/Supplier/Delete/@Model.SupplierID" method="post">
             <div class="form-group">
                 <label class="form-label">Tên đơn vị cung cấp: </label>
-                <p class="form-control-static"> Công ty Xuất nhập khẩu Thành Hưng </p>
+                <p class="form-control-static"> @Model.SupplierName </p>
             </div>
 
             <div class="form-group">
                 <label class="form-label"> Tên liên lạc: </label>
-                <p class="form-control-static"> Công ty Thành Hưng </p>
+                <p class="form-control-static"> @Model.ContactName </p>
             </div>
 
             <div class="form-group">
                 <label class="form-label"> Tỉnh: </label>
-                <p class="form-control-static"> Hà Nội </p>
+                <p class="form-control-static"> @Model.Province </p>
             </div>
 
             <div class="form-group">
                 <label class="form-label"> Địa chỉ: </label>
-                <p class="form-control-static"> 123 Phùng Hưng </p>
+                <p class="form-control-static"> @Model.Address </p>
             </div>
 
             <div class="form-group">
                 <label class="form-label"> Số điện thoại: </label>
-                <p class="form-control-static"> 0977555123 </p>
+                <p class="form-control-static"> @Model.Phone </p>
             </div>
 
             <div class="form-group">
                 <label class="form-label"> Email: </label>
-                <p class="form-control-static"> thanhhung@company.com </p>
+                <p class="form-control-static"> @Model.Email </p>
             </div>
 
             <div class="form-group text-right">
-                <button type="submit" class="btn btn-danger">
-                    <i class="fa fa-trash-o"></i>
-                    Xác nhận xoá
-                </button>
+                @if (ViewBag.AllowDelete)
+                {
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash-o"></i>
+                        Xác nhận xoá
+                    </button>
+                }
+                else
+                {
+                    <span style="color:red"> Không được phép xoá loại hàng này </span>
+                }
                 <a href="~/Supplier" class="btn btn-default">
                     Quay lại
                 </a>

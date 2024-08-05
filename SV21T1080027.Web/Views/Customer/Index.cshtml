@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SV21T1080027.DomainModels.Customer>
+﻿@model IEnumerable<Customer>
 @{
     ViewBag.Title = "Quản lý khách hàng";
 }
@@ -13,6 +13,7 @@
                     type="text" 
                     class="form-control" 
                     placeholder="Nhập tên khách hàng cần tìm"
+                       value="@ViewBag.SearchValue"
                     autofocus/>
                 
                 <div class="input-group-btn">
@@ -56,10 +57,10 @@
                             <td>@item.Province </td>
                             <td>@item.IsLocked</td>
                             <td class="text-right">
-                                <a href="~/Customer/Edit/@item.CustomerId" class="btn btn-xs btn-info">
+                                <a href="~/Customer/Edit/@item.CustomerID" class="btn btn-xs btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="~/Customer/Delete/@item.CustomerId" class="btn btn-xs btn-danger">
+                                <a href="~/Customer/Delete/@item.CustomerID" class="btn btn-xs btn-danger">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             </td>

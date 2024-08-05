@@ -1,30 +1,85 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using SV21T1080027.BusinessLayers;
+using SV21T1080027.DomainModels;
+using System.Buffers;
 
 namespace SV21T1080027.Web.Controllers
 {
     public class CategoryController : Controller
     {
-        public IActionResult Index()
+        const int PAGE_SIZE = 10;
+        public IActionResult Index(int page = 1, string searchValue = "")
         {
-            return View();
+            int rowCount = 0;
+            var data = CommonDataService.ListOfCategories(out rowCount, page, PAGE_SIZE, searchValue);
+            int pageCount = 1;
+
+            pageCount = (rowCount + PAGE_SIZE - 1) / PAGE_SIZE;
+
+            ViewBag.Page = page;
+            ViewBag.PageCount = pageCount;
+            ViewBag.RowCount = rowCount;
+            ViewBag.SearchValue = searchValue;
+
+            return View(data);
         }
 
         public IActionResult Create()
         {
             ViewBag.Title = "Tạo loại hàng";
-            return View("Edit"); 
+            Category category = new Category() { 
+                CategoryID = 0 
+            };
+            return View("Edit", category); 
         }
 
         public IActionResult Edit(int id = 0)
         {
-
             ViewBag.Title = "Chỉnh sửa loại hàng";
-            return View();
+            Category? category = CommonDataService.GetCategory(id);
+            if (category == null)
+            {
+                return RedirectToAction("Index");
+            }
+            return View(category);
         }
 
         public IActionResult Delete(int id = 0)
         {
-            return View();
+            
+            Category? category = CommonDataService.GetCategory(id);
+            if (category == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            if (Request.Method == "POST")
+            {
+                CommonDataService.DeleteCategory(id);
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.AllowDelete = true;
+            if (CommonDataService.IsUsedCategory(id))
+            {
+                ViewBag.AllowDelete = false;
+            }
+            return View(category);
+        }
+
+        [HttpPost]
+        public IActionResult Save(Category category)
+        {
+            if (category.CategoryID == 0)
+            {
+                CommonDataService.AddCategory(category);
+            }
+            else
+            {
+                CommonDataService.UpdateCategory(category);
+            }
+            return RedirectToAction("Index");
         }
     }
 }

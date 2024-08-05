@@ -5,7 +5,7 @@
         /// <summary>
         /// Thông tin khách hàng    
         /// </summary>
-        public int CustomerId { get; set; }
+        public int CustomerID { get; set; }
         public String CustomerName { get; set; } = String.Empty;
         public String ContactName { get; set; } = String.Empty;
         public String Province { get; set; } = String.Empty;
