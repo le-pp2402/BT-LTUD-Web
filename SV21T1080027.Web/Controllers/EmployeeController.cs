@@ -28,7 +28,6 @@ namespace SV21T1080027.Web.Controllers
 
         public IActionResult Search(PaginationSearchInput input)
         {
-            Console.WriteLine("passing line 31 in search action: " + input.Page);
             int rowCount = 0;
             var data = CommonDataService.ListOfEmployees(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "");
             var model = new EmployeeSearchResult()

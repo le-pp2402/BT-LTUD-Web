@@ -32,6 +32,8 @@ namespace SV21T1080027.Web.Controllers
 
         public IActionResult Search(PaginationSearchInput input)
         {
+
+            Console.WriteLine("passing line 36 in search action: " + input.Page);
             int rowCount = 0;
             var data = CommonDataService.ListOfCustomers(out rowCount, input.Page, PAGE_SIZE, input.SearchValue);
             CustomerSearchResult customerSR = new CustomerSearchResult

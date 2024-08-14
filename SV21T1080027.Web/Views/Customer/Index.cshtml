@@ -46,6 +46,8 @@
 
             var searchData = $(formSearch).serializeArray();
             searchData.push({ "name": "Page", "value": page });
+            console.log(searchData);
+            console.log(action + " " + method + " " + container);
 
             $.ajax({
                 url: action,
