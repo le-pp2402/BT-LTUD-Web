@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ProductSearchResult
+@{
     ViewBag.Title = "Quản lý sản phẩm";
 }
 
@@ -9,32 +10,61 @@
             <div class="row">
                 <div class="col-sm-3">
                     <label>Loại hàng:</label>
-                    <select class="form-control" name="CategoryID">
-                        <option value="">-- Chọn loại hàng --</option>
-                        <option value="1">May mặc - Thời trang</option>
-                        <option value="2">Mỹ phẩm</option>
+                    <select class="form-control" name="@nameof(Model.CategoryID)">
+                        @if (Model.CategoryID == 0)
+                        {
+                            <option value="0" selected>-- Chọn loại hàng --</option>
+                        } else
+                        {
+                            <option value="0">-- Chọn loại hàng --</option>
+                        }
+                        @foreach(var elem in Model.Categories)
+                        {
+                            if (Model.CategoryID == elem.CategoryID)
+                            {
+                                <option value="@elem.CategoryID" selected>@elem.CategoryName</option>
+                            } else
+                            {
+                                <option value="@elem.CategoryID">@elem.CategoryName</option>
+                            }
+                        }
                     </select>
                 </div>
                 <div class="col-sm-3">
                     <label>Nhà cung cấp:</label>
-                    <select class="form-control" name="SupplierID">
-                        <option value="">-- Chọn nhà cung cấp --</option>
-                        <option value="1">Công ty Xuất nhập khẩu Thành Hưng</option>
-                        <option value="2">Công ty TNHH Sao Mai Việt</option>
+                    <select class="form-control" name="@nameof(Model.SupplierID)">
+                        @if (Model.SupplierID == 0)
+                        {
+                            <option value="0" selected>-- Chọn nhà cung cấp --</option>
+                        }
+                        else
+                        {
+                            <option value="0">-- Chọn nhà cung cấp --</option>
+                        }
+                        @foreach(var elem in Model.Suppliers)
+                        {
+                            if (Model.SupplierID == elem.SupplierID)
+                            {
+                                <option value="@elem.SupplierID" selected>@elem.ContactName</option>
+                            } else
+                            {
+                                <option value="@elem.SupplierID">@elem.ContactName</option>
+                            }
+                        }
                     </select>
                 </div>
                 <div class="col-sm-1">
                     <label>Giá từ:</label>
-                    <input type="text" class="form-control" name="MinPrice" value="0">
+                    <input type="text" class="form-control" name="@nameof(Model.MinPrice)" value="@Model.MinPrice">
                 </div>
                 <div class="col-sm-1">
                     <label>đến:</label>
-                    <input type="text" class="form-control" name="MaxPrice" value="1000000000">
+                    <input type="text" class="form-control" name="@nameof(Model.MaxPrice)" value="@Model.MaxPrice">
                 </div>
                 <div class="col-sm-4">
                     <label>Tên mặt hàng cần tìm:</label>
                     <div class="input-group">
-                        <input name="SearchValue" type="text" class="form-control" placeholder="Nhập mặt hàng hàng cần tìm" autofocus>
+                        <input name="@nameof(Model.SearchValue)" type="text" class="form-control" placeholder="Nhập mặt hàng hàng cần tìm" autofocus value="@Model.SearchValue">
                         <div class="input-group-btn">
                             <button class="btn btn-info" type="submit">
                                 <i class="glyphicon glyphicon-search"></i>
@@ -49,7 +79,7 @@
         </form>
         <!-- Hiển thị dữ liệu -->
         <p style="margin-top:10px">
-            Có <strong>100</strong> sản phẩm trong tổng số <strong>10</strong> trang
+            Có <strong>@Model.RowCount</strong> sản phẩm trong tổng số <strong>@Model.PageCount</strong> trang
         </p>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
@@ -63,20 +93,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @for (int i = 1; i <= 10; i++)
+                    @foreach (var elem in Model.Data)
                     {
                         <tr>
                             <td>
-                                <img id="Photo" src="~/images/products/macbook.jpg" class="img img-bordered" style="width:80px" />
+                                <img id="Photo" src="@elem.Photo" class="img img-bordered" style="width:80px" />
                             </td>
-                            <td>Laptop Apple MacBook Air 13 inch M1 8GB/256GB (MGN63SA/A)</td>
-                            <td>Cái</td>
-                            <td>20,000,000</td>
+                            <td>@elem.ProductName</td>
+                            <td>@elem.Unit</td>
+                            <td>@Convert.ToUInt64(elem.Price)</td>
                             <td class="text-right">
-                                <a href="~/Product/Edit/123" class="btn btn-xs btn-info">
+                                <a href="~/Product/Edit/@elem.ProductID" class="btn btn-xs btn-info">
                                     <i class="fa fa-edit"></i>
                                 </a>
-                                <a href="~/Product/Delete/123" class="btn btn-xs btn-danger">
+                                <a href="~/Product/Delete/@elem.ProductID" class="btn btn-xs btn-danger">
                                     <i class="fa fa-remove"></i>
                                 </a>
                             </td>
@@ -88,11 +118,17 @@
         <div class="text-center">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                    @for (int p = 1; p <= Model.PageCount; p++)
+                    {
+                        if (p == Model.Page)
+                        {
+                            <li class="page-item active"><a class="page-link" href="~/Product?page=@p&searchValue=@Model.SearchValue&categoryID=@Model.CategoryID&supplierID=@Model.SupplierID&minPrice=@Model.MinPrice&maxPrice=@Model.MaxPrice"> @p </a></li>
+                        }
+                        else
+                        {
+                            <li class="page-item"><a class="page-link" href="~/Product?page=@p&searchValue=@Model.SearchValue&categoryID=@Model.CategoryID&supplierID=@Model.SupplierID&minPrice=@Model.MinPrice&maxPrice=@Model.MaxPrice"> @p </a></li>
+                        }
+                    }
                 </ul>
             </nav>
         </div>

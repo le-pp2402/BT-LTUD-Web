@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
+using SV21T1080027.Web.Models;
 
 namespace SV21T1080027.Web.Controllers
 {
@@ -11,16 +15,15 @@ namespace SV21T1080027.Web.Controllers
         {
             int rowCount = 0;
             var data = CommonDataService.ListOfCustomers(out rowCount, page, PAGE_SIZE, searchValue);
-            
-            int pageCount = 1;
-            
-            pageCount = (rowCount + PAGE_SIZE - 1) / PAGE_SIZE;
-
-            ViewBag.Page = page;
-            ViewBag.PageCount = pageCount;
-            ViewBag.RowCount = rowCount;
-            ViewBag.SearchValue = searchValue;
-            return View(data);
+            CustomerSearchResult customerSR = new CustomerSearchResult
+            {
+                Page = page,
+                RowCount = rowCount,
+                SearchValue = searchValue,
+                PageSize = PAGE_SIZE,
+                Data = data
+            };
+            return View(customerSR);
         }
 
         public IActionResult Create()
@@ -46,7 +49,26 @@ namespace SV21T1080027.Web.Controllers
 
         [HttpPost]
         public IActionResult Save(Customer customer) { 
-            // TODO: Validate information of customer
+            
+            ViewBag.Title = (customer.CustomerID == 0) ? "Tạo khách hàng" : "Chỉnh sửa khách hàng";
+
+            if (string.IsNullOrEmpty(customer.CustomerName))
+                ModelState.AddModelError(nameof(customer.CustomerName), "Tên khách hàng không được để trống");
+            if (string.IsNullOrEmpty(customer.ContactName))
+                ModelState.AddModelError(nameof(customer.ContactName), "Tên giao dịch không được để trống");
+            if (string.IsNullOrEmpty(customer.Province))
+                ModelState.AddModelError(nameof(customer.Province), "Vui lòng chọn tỉnh thành");
+            
+            customer.Phone = customer.Phone ?? "";
+            customer.Email = customer.Email ?? "";
+            customer.Address = customer.Address ?? "";
+
+            // Nếu tồn tại lỗi thì trả dữ liệu về lại cho view để người sử dụng nhập lại cho đúng
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", customer);
+            }
+
             if (customer.CustomerID == 0)
             {
                 CommonDataService.AddCustomer(customer);
@@ -73,7 +95,6 @@ namespace SV21T1080027.Web.Controllers
             
             return View(customer);
         }
-
 
     }
 }

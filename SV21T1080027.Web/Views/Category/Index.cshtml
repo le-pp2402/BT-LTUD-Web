@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Category>
+﻿@model CategorySearchResult
 @{
     ViewBag.Title = "Danh sách loại hàng";
 }
@@ -13,7 +13,7 @@
                        type="text"
                        class="form-control"
                        placeholder="Nhập loại hàng cần tìm"
-                       value="@ViewBag.SearchValue"
+                       value="@Model.SearchValue"
                        autofocus />
 
                 <div class="input-group-btn">
@@ -29,7 +29,7 @@
         </form>
         <!-- Hiển thị dữ liệu -->
         <p style="margin-top:10px">
-            Có <strong>@ViewBag.RowCount</strong> loại hàng trong tổng số <strong>@ViewBag.PageCount</strong> trang
+            Có <strong>@Model.RowCount</strong> loại hàng trong tổng số <strong>@Model.PageCount</strong> trang
         </p>
         <div class="table-responsive">
             <table class="table table-bordered table-hover table-striped">
@@ -41,7 +41,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var elem in Model)
+                    @foreach (var elem in Model.Data)
                     {
                         <tr>
                             <td>@elem.CategoryName</td>
@@ -63,15 +63,15 @@
         <div class="text-center">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    @for (int p = 1; p <= ViewBag.PageCount; p++)
+                    @for (int p = 1; p <= Model.PageCount; p++)
                     {
-                        if (p == ViewBag.page)
+                        if (p == Model.Page)
                         {
-                            <li class="page-item active"><a class="page-link" href="~/Category?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                            <li class="page-item active"><a class="page-link" href="~/Category?page=@p&searchValue=@Model.SearchValue"> @p </a></li>
                         }
                         else
                         {
-                            <li class="page-item"><a class="page-link" href="~/Category?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                            <li class="page-item"><a class="page-link" href="~/Category?page=@p&searchValue=@Model.SearchValue"> @p </a></li>
                         }
                     }
                 </ul>

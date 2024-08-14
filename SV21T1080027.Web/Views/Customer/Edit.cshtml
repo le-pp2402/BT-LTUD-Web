@@ -9,11 +9,13 @@
             <div class="form-group">
                 <label class="form-label">Tên khách hàng: </label>
                 <input type="text" class="form-control" name = "@nameof(Model.CustomerName)" value = "@Model.CustomerName" autofocus/>
+                @Html.ValidationMessage(nameof(Model.CustomerName))
             </div>
 
             <div class="form-group">
                 <label class="form-label">Tên giao dịch: </label>
                 <input type="text" class="form-control" name="@nameof(Model.ContactName)" value="@Model.ContactName"/>
+                @Html.ValidationMessage(nameof(Model.ContactName))
             </div>
 
             <div class="form-group">
@@ -46,12 +48,13 @@
                         }
                     }
                 </select>
+                @Html.ValidationMessageFor(m => m.Province)
             </div>
 
             <div class="form-group">
                 <label class="form-label">Trạng thái:</label>
                 <select class="form-control">
-                    if (@Model.IsLocked) {
+                    @if (Model.IsLocked) {
                         <option value="false"> Khách hàng không bị khoá </option>
                         <option value="true" selected> Khách hàng bị khoá </option>
                     } else {

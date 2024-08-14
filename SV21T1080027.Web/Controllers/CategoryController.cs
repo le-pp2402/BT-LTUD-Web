@@ -2,6 +2,7 @@
 using Microsoft.Identity.Client;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
+using SV21T1080027.Web.Models;
 using System.Buffers;
 
 namespace SV21T1080027.Web.Controllers
@@ -13,16 +14,16 @@ namespace SV21T1080027.Web.Controllers
         {
             int rowCount = 0;
             var data = CommonDataService.ListOfCategories(out rowCount, page, PAGE_SIZE, searchValue);
-            int pageCount = 1;
 
-            pageCount = (rowCount + PAGE_SIZE - 1) / PAGE_SIZE;
-
-            ViewBag.Page = page;
-            ViewBag.PageCount = pageCount;
-            ViewBag.RowCount = rowCount;
-            ViewBag.SearchValue = searchValue;
-
-            return View(data);
+            CategorySearchResult categorySR = new CategorySearchResult
+            {
+                Page = page,
+                RowCount = rowCount,
+                SearchValue = searchValue,
+                PageSize = PAGE_SIZE,
+                Data = data
+            };
+            return View(categorySR);
         }
 
         public IActionResult Create()

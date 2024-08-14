@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
+using SV21T1080027.Web.Models;
 
 namespace SV21T1080027.Web.Controllers
 {
@@ -11,14 +12,16 @@ namespace SV21T1080027.Web.Controllers
         {
             var rowCount = 0;
             var data = CommonDataService.ListOfShippers(out rowCount, page, PAGE_SIZE, searchValue);
-            int pageCount = (rowCount + PAGE_SIZE - 1) / PAGE_SIZE;
+            ShipperSearchResult shipperSearchResult = new ShipperSearchResult 
+            {
+                Page = page,
+                RowCount = rowCount,
+                SearchValue = searchValue,
+                PageSize = PAGE_SIZE,
+                Data = data
+            };
 
-            ViewBag.Page = page;
-            ViewBag.PageCount = pageCount;
-            ViewBag.RowCount = rowCount;
-            ViewBag.SearchValue = searchValue;
-
-            return View(data);
+            return View(shipperSearchResult);
         }
 
         public IActionResult Create()

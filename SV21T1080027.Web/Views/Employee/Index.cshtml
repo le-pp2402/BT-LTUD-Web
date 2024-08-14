@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Employee>
+﻿@* @model EmployeeSearchResult
 @{
     ViewBag.Title = "Quản lý nhân viên";
 }
@@ -12,7 +12,7 @@
                        type="text"
                        class="form-control"
                        placeholder="Nhập tên nhân viên cần tìm"
-                       value="@ViewBag.SearchValue"
+                       value="@Model.SearchValue"
                        autofocus />
 
                 <div class="input-group-btn">
@@ -28,10 +28,10 @@
         </form>
         <!-- Hiển thị dữ liệu -->
         <p style="margin-top:10px">
-            Có <strong>@ViewBag.RowCount</strong> nhân viên trong tổng số <strong>@ViewBag.PageCount</strong> trang
+            Có <strong>@Model.RowCount</strong> nhân viên trong tổng số <strong>@Model.PageCount</strong> trang
         </p>
         <div class="table-responsive">
-            @foreach (var employee in Model) {
+            @foreach (var employee in Model.Data) {
                 <!-- Thông tin nhân viên -->
                 <div class="col-sm-4">
                     <div class="box box-info">
@@ -49,7 +49,7 @@
                         <div class="box-body">
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <img class="profile-user-img img-responsive img-bordered" src="~/themes/dist/img/@employee.Photo">
+                                    <img class="profile-user-img img-responsive img-bordered" src="@employee.Photo">
                                 </div>
                                 <div class="col-sm-8">
                                     <ul class="list-group list-group-unbordered">
@@ -74,15 +74,15 @@
         <div class="text-center">
             <nav aria-label="Page navigation example">
                 <ul class="pagination">
-                    @for (int p = 1; p <= ViewBag.PageCount; p++)
+                    @for (int p = 1; p <= Model.PageCount; p++)
                     {
-                        if (p == ViewBag.page)
+                        if (p == Model.Page)
                         {
-                            <li class="page-item active"><a class="page-link" href="~/Employee?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                            <li class="page-item active"><a class="page-link" href="~/Employee?page=@p&searchValue=@Model.SearchValue"> @p </a></li>
                         }
                         else
                         {
-                            <li class="page-item"><a class="page-link" href="~/Employee?page=@p&searchValue=@ViewBag.SearchValue"> @p </a></li>
+                            <li class="page-item"><a class="page-link" href="~/Employee?page=@p&searchValue=@Model.SearchValue"> @p </a></li>
                         }
                     }
                 </ul>
@@ -92,4 +92,73 @@
 </div>
 
                
- 
+  *@
+
+
+
+
+@model PaginationSearchInput
+@{
+    ViewBag.Title = "Quản lý Nhân viên";
+}
+
+<div class="box box-primary">
+    <div class="box-body">
+        <!-- Form nhập đầu vào tìm kiếm -->
+        <form id="formSearch" action="~/Employee/Search" method="get" data-container="#searchResult">
+            <div class="input-group">
+                <input type="hidden" name="@nameof(Model.PageSize)" value="@Model.PageSize" />
+                <input name="@nameof(Model.SearchValue)" type="text" class="form-control"
+                       placeholder="Nhập tên nhân viên cần tìm" autofocus value="@Model.SearchValue">
+                <div class="input-group-btn">
+                    <button class="btn btn-info" type="submit">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                    <a href="~/Employee/Create" class="btn btn-primary" style="margin-left:5px">
+                        <i class="fa fa-plus"></i> Bổ sung
+                    </a>
+                </div>
+            </div>
+        </form>
+
+        <!-- Hiển thị kết quả tìm kiếm -->
+        <div id="searchResult">
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                paginationSearch(this, 1);
+                return;
+            });
+            paginationSearch("#formSearch", @Model.Page);
+        });
+
+        function paginationSearch(formSearch, page) {
+            var action = $(formSearch).prop("action");
+            var method = $(formSearch).prop("method");
+            var container = $(formSearch).data("container");
+
+            var searchData = $(formSearch).serializeArray();
+            searchData.push({ "name": "Page", "value": page });
+
+            $.ajax({
+                url: action,
+                type: method,
+                data: searchData,
+                async: false,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $(container).html(data);
+                }
+            });
+        }
+    </script>
+}
+
