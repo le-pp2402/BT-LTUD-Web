@@ -2,6 +2,7 @@
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
 using SV21T1080027.Web.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace SV21T1080027.Web.Controllers
 {
@@ -23,22 +24,11 @@ namespace SV21T1080027.Web.Controllers
                 };
             }
             return View(input);
-            //int rowCount = 0;
-            //var data = CommonDataService.ListOfEmployees(out rowCount, page, PAGE_SIZE, searchValue);
-
-            //EmployeeSearchResult employeeSearchResult = new EmployeeSearchResult
-            //{
-            //    Page = page,
-            //    RowCount = rowCount,
-            //    SearchValue = searchValue,
-            //    PageSize = PAGE_SIZE,
-            //    Data = data
-            //};
-            //return View(employeeSearchResult);
         }
 
         public IActionResult Search(PaginationSearchInput input)
         {
+            Console.WriteLine("passing line 31 in search action: " + input.Page);
             int rowCount = 0;
             var data = CommonDataService.ListOfEmployees(out rowCount, input.Page, input.PageSize, input.SearchValue ?? "");
             var model = new EmployeeSearchResult()
@@ -76,30 +66,51 @@ namespace SV21T1080027.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(Employee employee, IFormFile uploadPhoto)
+        public IActionResult Save(Employee employee, string birthDateInput, IFormFile uploadPhoto)
         {
-            if (employee.EmployeeID == 0)
+
+            ViewBag.Title = employee.EmployeeID == 0 ? "Bổ sung nhân viên" : "Cập nhật thông tin nhân viên";
+
+            //Kiểm tra dữ liệu đầu vào
+            if (string.IsNullOrWhiteSpace(employee.FullName))
+                ModelState.AddModelError(nameof(employee.FullName), "Họ tên nhân viên không được để trống");
+            if (string.IsNullOrWhiteSpace(employee.Email))
+                ModelState.AddModelError(nameof(employee.Email), "Vui lòng nhập email");
+            if (string.IsNullOrWhiteSpace(employee.Address))
+                employee.Address = "";
+            if (string.IsNullOrWhiteSpace(employee.Phone))
+                employee.Phone = "";
+
+            //Xử lý ngày sinh
+            DateTime? birthDate = birthDateInput.ToDateTime();
+            if (birthDate.HasValue)
+                employee.BirthDate = birthDate.Value;
+
+            //Xử lý với ảnh upload (nếu có ảnh upload thì lưu ảnh và gán lại tên file ảnh mới cho employee)
+            if (uploadPhoto != null)
             {
-                employee.EmployeeID = CommonDataService.AddEmployee(employee);
-            }
-            
-            Console.WriteLine("cap nhat id = " + employee.EmployeeID);
-            if (uploadPhoto != null && uploadPhoto.ContentType.Contains("image"))
-            {
-                var fileName = Path.GetFileName(employee.EmployeeID.ToString() + Path.GetExtension(uploadPhoto.FileName));
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/employees", fileName);
-                    
-                Console.WriteLine(fileName);
+                string fileName = $"{DateTime.Now.Ticks}_{uploadPhoto.FileName}"; //Tên file sẽ lưu
+                string folder = Path.Combine(ApplicationContext.WebRootPath, @"images\employees"); //đường dẫn đến thư mục lưu file
+                string filePath = Path.Combine(folder, fileName); //Đường dẫn đến file cần lưu D:\images\employees\photo.png
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await uploadPhoto.CopyToAsync(stream);
+                    uploadPhoto.CopyTo(stream);
                 }
-
-                employee.Photo = $"/images/employees/{fileName}";
+                employee.Photo = fileName;
             }
-            CommonDataService.UpdateEmployee(employee);
-            
+
+            if (!ModelState.IsValid)
+                return View("Edit", employee);
+
+            if (employee.EmployeeID == 0)
+            {
+                CommonDataService.AddEmployee(employee);
+            }
+            else
+            {
+                CommonDataService.UpdateEmployee(employee);
+            }
             return RedirectToAction("Index");
         }
 
