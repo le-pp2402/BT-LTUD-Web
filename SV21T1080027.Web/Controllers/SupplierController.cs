@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
 using SV21T1080027.Web.Models;
 
 namespace SV21T1080027.Web.Controllers
 {
+    [Authorize]
     public class SupplierController : Controller
     {
         const int PAGE_SIZE = 20;
@@ -19,7 +21,6 @@ namespace SV21T1080027.Web.Controllers
                 PageSize = PAGE_SIZE,
                 Data = data
             };
-
             return View("Index", supplierSearchResult);
         }
 
@@ -53,9 +54,7 @@ namespace SV21T1080027.Web.Controllers
                 CommonDataService.DeleteSupplier(id);
                 return RedirectToAction("Index");
             }
-
             ViewBag.AllowDelete = !CommonDataService.IsUsedSupplier(id);
-
             return View(supplier);
         }
 

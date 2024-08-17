@@ -8,7 +8,7 @@
             <input type = "hidden" name="@nameof(Model.CustomerID)" value="@Model.CustomerID" />
             <div class="form-group">
                 <label class="form-label">Tên khách hàng: </label>
-                <input type="text" class="form-control" name = "@nameof(Model.CustomerName)" value = "@Model.CustomerName" autofocus/>
+                @Html.TextBoxFor(m=>m.CustomerName, new { @class="form-control", @autofocus = "autofocus" })
                 @Html.ValidationMessage(nameof(Model.CustomerName))
             </div>
 
@@ -35,19 +35,7 @@
 
             <div class="form-group">
                 <label class="form-label">Tỉnh/Thành</label>
-                <select class="form-control" name="@nameof(Model.Province)">
-                    <option value=""> --- Chọn tỉnh thành </option>
-                    @foreach (var province in CommonDataService.ListOfProvinces())
-                    {
-                        if (province.ProvinceName.Equals(Model.Province))
-                        {
-                            <option value ="@province.ProvinceName" selected>@province.ProvinceName</option>
-                        }   else
-                        {
-                            <option value="@province.ProvinceName">@province.ProvinceName</option>
-                        }
-                    }
-                </select>
+                @Html.DropDownListFor(m=>m.Province, SelectListHelper.Provinces(), new { @class="form-control"})
                 @Html.ValidationMessageFor(m => m.Province)
             </div>
 

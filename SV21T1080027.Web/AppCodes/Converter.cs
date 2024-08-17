@@ -16,10 +16,10 @@ namespace SV21T1080027.Web
             try
             {
                 return DateTime.ParseExact(s, formats.Split(';'), CultureInfo.InvariantCulture);
-
             }
             catch
             {
+                Console.WriteLine("Format datetime không hợp lệ AppCodes/Converter.cs");
                 return null;
             }
         }

@@ -63,7 +63,7 @@
                 <label class="control-label col-sm-2">Ảnh cá nhân:</label>
                 <div class="col-sm-10">
                     <input type="hidden" name="@nameof(Model.Photo)" value="@Model.Photo" />
-                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*"
+                    <input type="file" class="form-control" name="uploadPhoto" accept="image/*" id="formFile"
                            onchange="document.getElementById('Photo').src = window.URL.createObjectURL(this.files[0])" />
                 </div>
             </div>

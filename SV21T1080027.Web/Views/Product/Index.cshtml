@@ -1,4 +1,5 @@
-﻿@model ProductSearchResult
+﻿@model ProductSearchInput
+
 @{
     ViewBag.Title = "Quản lý sản phẩm";
 }
@@ -6,52 +7,16 @@
 <div class="box box-primary">
     <div class="box-body">
         <!-- Form để nhập đầu vào tìm kiếm -->
-        <form id="formSearch" action="/Product" method="get">
+        <form id="formSearch" action="/Product/Search" method="get" data-container="#searchResult">
+            <input type="hidden" name="@nameof(Model.PageSize)" value="@Model.PageSize" />
             <div class="row">
                 <div class="col-sm-3">
                     <label>Loại hàng:</label>
-                    <select class="form-control" name="@nameof(Model.CategoryID)">
-                        @if (Model.CategoryID == 0)
-                        {
-                            <option value="0" selected>-- Chọn loại hàng --</option>
-                        } else
-                        {
-                            <option value="0">-- Chọn loại hàng --</option>
-                        }
-                        @foreach(var elem in Model.Categories)
-                        {
-                            if (Model.CategoryID == elem.CategoryID)
-                            {
-                                <option value="@elem.CategoryID" selected>@elem.CategoryName</option>
-                            } else
-                            {
-                                <option value="@elem.CategoryID">@elem.CategoryName</option>
-                            }
-                        }
-                    </select>
+                    @Html.DropDownList("CategoryID", SelectListHelper.Categories(), "Chọn loại hàng", new { @class = "form-control" })
                 </div>
                 <div class="col-sm-3">
                     <label>Nhà cung cấp:</label>
-                    <select class="form-control" name="@nameof(Model.SupplierID)">
-                        @if (Model.SupplierID == 0)
-                        {
-                            <option value="0" selected>-- Chọn nhà cung cấp --</option>
-                        }
-                        else
-                        {
-                            <option value="0">-- Chọn nhà cung cấp --</option>
-                        }
-                        @foreach(var elem in Model.Suppliers)
-                        {
-                            if (Model.SupplierID == elem.SupplierID)
-                            {
-                                <option value="@elem.SupplierID" selected>@elem.ContactName</option>
-                            } else
-                            {
-                                <option value="@elem.SupplierID">@elem.ContactName</option>
-                            }
-                        }
-                    </select>
+                    @Html.DropDownList("SupplierID", SelectListHelper.Suppliers(), "Chọn nhà cung cấp", new { @class = "form-control" })
                 </div>
                 <div class="col-sm-1">
                     <label>Giá từ:</label>
@@ -78,60 +43,45 @@
             </div>
         </form>
         <!-- Hiển thị dữ liệu -->
-        <p style="margin-top:10px">
-            Có <strong>@Model.RowCount</strong> sản phẩm trong tổng số <strong>@Model.PageCount</strong> trang
-        </p>
-        <div class="table-responsive">
-            <table class="table table-bordered table-hover table-striped">
-                <thead>
-                    <tr class="bg-primary">
-                        <th style="width:100px">Ảnh</th>
-                        <th style="width:auto">Tên mặt hàng</th>
-                        <th style="width:100px">Đơn vị tính</th>
-                        <th>Giá</th>
-                        <th style="width:80px"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var elem in Model.Data)
-                    {
-                        <tr>
-                            <td>
-                                <img id="Photo" src="@elem.Photo" class="img img-bordered" style="width:80px" />
-                            </td>
-                            <td>@elem.ProductName</td>
-                            <td>@elem.Unit</td>
-                            <td>@Convert.ToUInt64(elem.Price)</td>
-                            <td class="text-right">
-                                <a href="~/Product/Edit/@elem.ProductID" class="btn btn-xs btn-info">
-                                    <i class="fa fa-edit"></i>
-                                </a>
-                                <a href="~/Product/Delete/@elem.ProductID" class="btn btn-xs btn-danger">
-                                    <i class="fa fa-remove"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+        <div id="searchResult">
         </div>
-        <div class="text-center">
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-                    @for (int p = 1; p <= Model.PageCount; p++)
-                    {
-                        if (p == Model.Page)
-                        {
-                            <li class="page-item active"><a class="page-link" href="~/Product?page=@p&searchValue=@Model.SearchValue&categoryID=@Model.CategoryID&supplierID=@Model.SupplierID&minPrice=@Model.MinPrice&maxPrice=@Model.MaxPrice"> @p </a></li>
-                        }
-                        else
-                        {
-                            <li class="page-item"><a class="page-link" href="~/Product?page=@p&searchValue=@Model.SearchValue&categoryID=@Model.CategoryID&supplierID=@Model.SupplierID&minPrice=@Model.MinPrice&maxPrice=@Model.MaxPrice"> @p </a></li>
-                        }
-                    }
-                </ul>
-            </nav>
-        </div>
+
+        
     </div>
         
 </div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#formSearch").submit(function (e) {
+                e.preventDefault();
+                paginationSearch(this, 1);
+                return;
+            });
+            paginationSearch("#formSearch", @Model.Page);
+        });
+
+        function paginationSearch(formSearch, page) {
+            var action = $(formSearch).prop("action");
+            var method = $(formSearch).prop("method");
+            var container = $(formSearch).data("container");
+
+            var searchData = $(formSearch).serializeArray();
+            searchData.push({ "name": "Page", "value": page });
+
+            $.ajax({
+                url: action,
+                type: method,
+                data: searchData,
+                async: false,
+                error: function () {
+                    alert("Your request is not valid!");
+                },
+                success: function (data) {
+                    $(container).html(data);
+                }
+            });
+        }
+    </script>
+}

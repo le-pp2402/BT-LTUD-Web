@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +10,7 @@ using System.Buffers;
 
 namespace SV21T1080027.Web.Controllers
 {
+    [Authorize(Roles = $"{WebUserRoles.Employee}")]
     public class CustomerController : Controller
     {
         const int PAGE_SIZE = 20;
@@ -32,7 +34,6 @@ namespace SV21T1080027.Web.Controllers
 
         public IActionResult Search(PaginationSearchInput input)
         {
-
             Console.WriteLine("passing line 36 in search action: " + input.Page);
             int rowCount = 0;
             var data = CommonDataService.ListOfCustomers(out rowCount, input.Page, PAGE_SIZE, input.SearchValue);

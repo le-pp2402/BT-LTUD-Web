@@ -15,7 +15,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                 .AddCookie(option =>
                 {
                     option.Cookie.Name = "AuthenticationCookie";
-                    option.LoginPath = "/Account/Login";
+                    option.LoginPath = "/Account/Login"; 
                     option.AccessDeniedPath = "/Account/AccessDenined";
                     option.ExpireTimeSpan = TimeSpan.FromDays(360);
                 });
@@ -34,14 +34,11 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
 app.UseStaticFiles();
-
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseAuthorization();
-
 app.UseSession();
 
 app.MapControllerRoute(

@@ -1,35 +1,62 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
 using SV21T1080027.Web.Models;
 using System.Buffers;
+using SV21T1080027.Web;
 
 namespace SV21T1080027.Web.Controllers
 {
+    [Authorize(Roles = $"{WebUserRoles.Administrator},{WebUserRoles.Employee}")]
     public class ProductController : Controller
     {
         const int PAGE_SIZE = 20;
+        private const string SEARCH_CONDITION = "product_search";
+
         public IActionResult Index(int page = 1, int categoryID = 0, int supplierID = 0, int minPrice = 0, int maxPrice = 0, string searchValue = "")
         {
-            Console.WriteLine("Pasing line 13 in method index");
-            int rowCount = 0, tempRowCount = 0;
-            List<Product> products = ProductDataService.List(out rowCount, page, PAGE_SIZE, searchValue, categoryID, supplierID, minPrice, maxPrice);
-            var model = new ProductSearchResult { 
-                Data = products, 
-                Page = page,
-                CategoryID = categoryID,
-                SupplierID = supplierID,
-                MinPrice = minPrice,
-                MaxPrice = maxPrice,
-                PageSize = PAGE_SIZE,
-                RowCount = rowCount,
-                SearchValue = searchValue,
-                Categories = CommonDataService.ListOfCategories(out tempRowCount, 1, 0, ""),
-                Suppliers = CommonDataService.ListOfSuppliers(out tempRowCount, 1, 0, "")
-            };
-            return View(model);
+            ProductSearchInput? input = ApplicationContext.GetSessionData<ProductSearchInput>(SEARCH_CONDITION);
+
+            if (input == null)
+            {
+                input = new ProductSearchInput
+                {
+                    CategoryID = categoryID,
+                    SupplierID = supplierID,
+                    MinPrice = minPrice,
+                    MaxPrice = maxPrice,
+                    SearchValue = searchValue,
+                    Page = 1,
+                    PageSize = PAGE_SIZE
+                };
+            }
+
+
+            return View(input);
         }
 
+        public IActionResult Search(ProductSearchInput input)
+        {
+            int rowCount = 0;
+            var data = ProductDataService.List(out rowCount, input.Page, input.PageSize, input.SearchValue, input.CategoryID, input.SupplierID, input.MinPrice, input.MaxPrice).ToList();
+
+            var model = new ProductSearchResult()
+            {
+                Page = input.Page,
+                PageSize = input.PageSize,
+                SearchValue = input.SearchValue ?? "",
+                RowCount = rowCount,
+                Data = data,
+                MaxPrice = input.MaxPrice,
+                MinPrice = input.MinPrice,
+                SupplierID = input.SupplierID,
+                CategoryID = input.CategoryID
+            };
+
+            ApplicationContext.SetSessionData(SEARCH_CONDITION, input);
+            return View(model);
+        }
         public IActionResult Create()
         {
             ViewBag.Title = "Thêm sản phẩm";

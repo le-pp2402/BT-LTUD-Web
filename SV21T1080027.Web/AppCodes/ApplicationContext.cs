@@ -39,7 +39,6 @@ namespace SV21T1080027.Web
         {
             try
             {
-
                 string sValue = JsonConvert.SerializeObject(value);
                 if (!string.IsNullOrEmpty(sValue))
                 {
