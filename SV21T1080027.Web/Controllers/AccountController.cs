@@ -62,5 +62,10 @@ namespace SV21T1080027.Web.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Login");
         }
+
+        public IActionResult AccessDenined()
+        {
+            return View();
+        }
     }
 }

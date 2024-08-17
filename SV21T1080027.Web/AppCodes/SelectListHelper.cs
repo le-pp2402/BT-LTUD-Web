@@ -14,7 +14,7 @@ namespace SV21T1080027.Web
             List<SelectListItem > list = new List<SelectListItem>();
             list.Add(new SelectListItem()
             {
-                Value = "",
+                Value = "0",
                 Text = "-- Chọn tỉnh/thành --"
             });
             foreach (var item in CommonDataService.ListOfProvinces())
@@ -35,6 +35,11 @@ namespace SV21T1080027.Web
         public static List<SelectListItem> Categories()
         {
             List<SelectListItem> list = new List<SelectListItem>();
+            list.Add(new SelectListItem()
+            {
+                Value = "0",
+                Text = "-- Chọn loại hàng --"
+            });
             int rowCount;
             foreach (var item in CommonDataService.ListOfCategories(out rowCount, 1, 0, ""))
             {
@@ -54,6 +59,11 @@ namespace SV21T1080027.Web
         public static List<SelectListItem> Suppliers()
         {
             List<SelectListItem> list = new List<SelectListItem>();
+            list.Add(new SelectListItem()
+            {
+                Value = "0",
+                Text = "-- Chọn nhà cung cấp --"
+            });
             int rowCount;
             foreach (var item in CommonDataService.ListOfSuppliers(out rowCount, 1, 0, ""))
             {
@@ -75,7 +85,7 @@ namespace SV21T1080027.Web
             List<SelectListItem> list = new List<SelectListItem>();
             list.Add(new SelectListItem()
             {
-                Value = "",
+                Value = "0",
                 Text = "-- Chọn khách hàng --"
             });
             int rowCount;
@@ -95,7 +105,7 @@ namespace SV21T1080027.Web
             List<SelectListItem> list = new List<SelectListItem>();
             list.Add(new SelectListItem()
             {
-                Value = "",
+                Value = "0",
                 Text = "-- Chọn người giao hàng --"
             });
             int rowCount;
@@ -119,7 +129,7 @@ namespace SV21T1080027.Web
             List<SelectListItem> list = new List<SelectListItem>();
             list.Add(new SelectListItem()
             {
-                Value = "",
+                Value = "0",
                 Text = "-- Chọn nhân viên --"
             });
             int rowCount;

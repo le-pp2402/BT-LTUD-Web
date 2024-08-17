@@ -60,14 +60,9 @@ namespace SV21T1080027.Web.Controllers
         public IActionResult Create()
         {
             ViewBag.Title = "Thêm sản phẩm";
-            int temp = 0;
-            var lstCategory = CommonDataService.ListOfCategories(out temp, 1, 0, "");
-            var lstSupplier = CommonDataService.ListOfSuppliers(out temp, 1, 0, "");
 
             var productDetail = new ProductDetail()
             {
-                Categories = lstCategory ?? new List<Category>(),
-                Suppliers = lstSupplier ?? new List<Supplier>(),
                 Product = new Product()
             };
             return View("Edit", productDetail);
@@ -83,18 +78,13 @@ namespace SV21T1080027.Web.Controllers
                 return View("Index");
             }
 
-            int temp = 0;
             var lstPhoto = ProductDataService.ListPhotos(id);
             var lstAttribute = ProductDataService.ListAttributes(id);
-            var lstCategory = CommonDataService.ListOfCategories(out temp, 1, 0, "");
-            var lstSupplier = CommonDataService.ListOfSuppliers(out temp, 1, 0, "");
 
             var productDetail = new ProductDetail()
             {
                 Photos = lstPhoto ?? new List<ProductPhoto>(),
                 Attributes = lstAttribute ?? new List<ProductAttribute>(),
-                Categories = lstCategory ?? new List<Category>(),
-                Suppliers = lstSupplier ?? new List<Supplier>(),
                 Product = product    
             };
 
@@ -102,11 +92,8 @@ namespace SV21T1080027.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(Product product, IFormFile uploadPhoto)
+        public async Task<IActionResult> Save(Product product, IFormFile uploadPhoto, String _Price)
         {
-            Console.WriteLine(product.Price);
-            Console.WriteLine(product.SupplierID);
-            Console.WriteLine(product.CategoryID);
 
             ViewBag.Title = (product.ProductID == 0) ? "Thêm sản phẩm" : "Chỉnh sửa sản phẩm";
 
@@ -116,34 +103,34 @@ namespace SV21T1080027.Web.Controllers
                 ModelState.AddModelError(nameof(product.CategoryID), "Vui lòng chọn loại sản phẩm");
             if (product.SupplierID == 0)
                 ModelState.AddModelError(nameof(product.SupplierID), "Vui lòng chọn nhà cung cấp");
-
+            if (string.IsNullOrEmpty(_Price))
+            {
+                ModelState.AddModelError(nameof(_Price), "Giá trị không hợp lệ");
+            }
             product.Photo = product.Photo ?? "";
             product.Unit = product.Unit ?? "";
 
-            int temp = 0;
-            var lstPhoto = ProductDataService.ListPhotos(product.ProductID);
-            var lstAttribute = ProductDataService.ListAttributes(product.ProductID);
-            var lstCategory = CommonDataService.ListOfCategories(out temp, 1, 0, "");
-            var lstSupplier = CommonDataService.ListOfSuppliers(out temp, 1, 0, "");
-            var productDetail = new ProductDetail()
+            try
             {
-                Photos = lstPhoto ?? new List<ProductPhoto>(),
-                Attributes = lstAttribute ?? new List<ProductAttribute>(),
-                Categories = lstCategory ?? new List<Category>(),
-                Suppliers = lstSupplier ?? new List<Supplier>(),
-                Product = product
-            };
-
-            if (!ModelState.IsValid)
+                product.Price = Decimal.Parse(_Price.Replace(",", ""));
+            } catch (Exception e)
             {
-                return View("Edit", productDetail);
-            }
-
-            if (product.ProductID == 0)
-            {
-                product.ProductID = ProductDataService.Add(product);
+                ModelState.AddModelError(nameof(_Price), "Giá trị không hợp lệ");
+                Console.WriteLine(e.Message);
             }
             
+            if (!ModelState.IsValid)
+            {
+                var lstPhoto = ProductDataService.ListPhotos(product.ProductID);
+                var lstAttribute = ProductDataService.ListAttributes(product.ProductID);
+                var productDetail = new ProductDetail()
+                {
+                    Photos = lstPhoto ?? new List<ProductPhoto>(),
+                    Attributes = lstAttribute ?? new List<ProductAttribute>(),
+                    Product = product
+                };
+                return View("Edit", productDetail);
+            }
 
             if (uploadPhoto != null && uploadPhoto.ContentType.Contains("image"))
             {
@@ -160,7 +147,13 @@ namespace SV21T1080027.Web.Controllers
                 product.Photo = $"/images/products/{fileName}";
             }
 
-            ProductDataService.Update(product);
+            if (product.ProductID == 0)
+            {
+                product.ProductID = ProductDataService.Add(product);
+            } else
+            {
+                ProductDataService.Update(product);
+            }
 
             return RedirectToAction("Index");
         }
