@@ -36,6 +36,7 @@ namespace SV21T1080027.DataLayers.SQLServer
                     CategoryID = data.CategoryID
                 };  
                 id = connection.ExecuteScalar<int>(sql, param, commandType: System.Data.CommandType.Text);
+                connection.Close();
             }
             return id;
         }
@@ -63,6 +64,7 @@ namespace SV21T1080027.DataLayers.SQLServer
                     DisplayOrder = data.DisplayOrder
                 };
                 id = connection.ExecuteScalar<int>(sql, param, commandType: System.Data.CommandType.Text);
+                connection.Close();
             }
             return id;
         }

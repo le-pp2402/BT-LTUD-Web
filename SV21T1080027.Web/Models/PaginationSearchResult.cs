@@ -35,4 +35,9 @@ namespace SV21T1080027.Web.Models
         public int MinPrice { get; set; } 
         public int MaxPrice { get; set; }
     } 
+
+    public class OrderSearchResult : PaginationSearchResult<Order> {
+        public int Status { get; set; } = 0;
+        public string TimeRange { get; set; } = "";
+    }
 }

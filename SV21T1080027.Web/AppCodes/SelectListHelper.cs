@@ -163,5 +163,54 @@ namespace SV21T1080027.Web
             }
             return list;
         }
+
+        public static List<SelectListItem> StatusOfOrder()
+        {
+            var lst = new List<SelectListItem>();
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "0",
+                Text = "-- Trạng thái --"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "1", 
+                Text = "Đơn hàng mới (chờ duyệt)"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "2", 
+                Text = "Đơn hàng đã duyệt (chờ chuyển hàng)"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "3", 
+                Text = "Đơn hàng đang được giao"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "4", 
+                Text = "Đơn hàng đã hoàn tất thành công"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "-1", 
+                Text = "Đơn hàng bị hủy"
+            });
+
+            lst.Add(new SelectListItem()
+            {
+                Value = "-2", 
+                Text = "Đơn hàng bị từ chối"
+            });
+
+            return lst;
+        }
     }
 }
