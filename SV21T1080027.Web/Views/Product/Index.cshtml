@@ -12,19 +12,19 @@
             <div class="row">
                 <div class="col-sm-3">
                     <label>Loại hàng:</label>
-                    @Html.DropDownList("CategoryID", SelectListHelper.Categories(), "Chọn loại hàng", new { @class = "form-control" })
+                    @Html.DropDownList("CategoryID", SelectListHelper.Categories(), new { @class = "form-control" })
                 </div>
                 <div class="col-sm-3">
                     <label>Nhà cung cấp:</label>
-                    @Html.DropDownList("SupplierID", SelectListHelper.Suppliers(), "Chọn nhà cung cấp", new { @class = "form-control" })
+                    @Html.DropDownList("SupplierID", SelectListHelper.Suppliers(), new { @class = "form-control" })
                 </div>
                 <div class="col-sm-1">
                     <label>Giá từ:</label>
-                    <input type="text" class="form-control" name="@nameof(Model.MinPrice)" value="@Model.MinPrice">
+                    <input type="text" class="form-control" name="@nameof(Model.MinPrice)" value="@Model.MinPrice.ToString("N0")" oninput="formatNumber(this)">
                 </div>
                 <div class="col-sm-1">
                     <label>đến:</label>
-                    <input type="text" class="form-control" name="@nameof(Model.MaxPrice)" value="@Model.MaxPrice">
+                    <input type="text" class="form-control" name="@nameof(Model.MaxPrice)" value="@Model.MaxPrice.ToString("N0")" oninput="formatNumber(this)">
                 </div>
                 <div class="col-sm-4">
                     <label>Tên mặt hàng cần tìm:</label>
@@ -50,6 +50,17 @@
     </div>
         
 </div>
+
+
+<script>
+    // function formatNumber(elem) {
+    //     console.log("formating number...");
+    //     var value = elem.value;
+    //     var numericValue = value.replace(/[^0-9]/g, '');
+    //     var formattedValue = Number(numericValue).toLocaleString();
+    //     elem.value = formattedValue;
+    // }
+</script>
 
 @section scripts {
     <script>

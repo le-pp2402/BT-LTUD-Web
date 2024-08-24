@@ -13,7 +13,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-2" >Tên thuộc tính:</label>
                 <div class="col-sm-10">
-                    <input type="text" class="form-control" name="@nameof(Model.AttributeName)" autofocus value="@Model.AttributeName" />
+                    <input type="text" class="form-control" name="@nameof(Model.AttributeName)" autofocus value="@Model.AttributeName" required/>
                 </div>
             </div>
 
@@ -27,7 +27,7 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Thứ tự hiển thị:</label>
                 <div class="col-sm-10">
-                    <input type="number" class="form-control" name="@nameof(Model.DisplayOrder)" value="@Model.DisplayOrder"/>
+                    <input type="number" class="form-control" name="@nameof(Model.DisplayOrder)" value="@Model.DisplayOrder" required />
                 </div>
             </div>
 

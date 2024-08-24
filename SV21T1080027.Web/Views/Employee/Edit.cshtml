@@ -24,6 +24,7 @@
                     <input type="text" class="form-control date-picker"
                            name="BirthDateInput"
                            value="@Model.BirthDate.ToString("dd/MM/yyyy", new System.Globalization.CultureInfo("en-GB"))" />
+                    @Html.ValidationMessage("BirthDateInput")
                 </div>
             </div>
 
@@ -50,12 +51,9 @@
             </div>
 
             <div class="form-group">
-                <div class="col-lg-offset-2 col-sm-10">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" name="@nameof(Model.IsWorking)" value="true" "@(Model.IsWorking ? "checked" : "")" /> Nhân viên đang làm việc
-                        </label>
-                    </div>
+                <label class="form-check-label control-label col-sm-2">Nhân viên đang làm việc:</label>
+                <div class="col-sm-10">
+                    <input type="checkbox" class = "form-check-input" name="@nameof(Model.IsWorking)" value="@(Model.IsWorking ? "true" : "false")" @(Model.IsWorking ? "checked" : "") onclick="$(this).val(this.checked ? true : false)" />
                 </div>
             </div>
 
@@ -74,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group text-right">
                 <div class="col-lg-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-primary">
                         <i class="fa fa-floppy-o"></i>

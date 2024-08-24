@@ -92,9 +92,8 @@ namespace SV21T1080027.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Save(Product product, IFormFile uploadPhoto, String _Price)
+        public IActionResult Save(Product product, IFormFile uploadPhoto, String _Price)
         {
-
             ViewBag.Title = (product.ProductID == 0) ? "Thêm sản phẩm" : "Chỉnh sửa sản phẩm";
 
             if (string.IsNullOrEmpty(product.ProductName))
@@ -107,18 +106,20 @@ namespace SV21T1080027.Web.Controllers
             {
                 ModelState.AddModelError(nameof(_Price), "Giá trị không hợp lệ");
             }
+
             product.Photo = product.Photo ?? "";
             product.Unit = product.Unit ?? "";
 
             try
             {
                 product.Price = Decimal.Parse(_Price.Replace(",", ""));
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 ModelState.AddModelError(nameof(_Price), "Giá trị không hợp lệ");
                 Console.WriteLine(e.Message);
             }
-            
+
             if (!ModelState.IsValid)
             {
                 var lstPhoto = ProductDataService.ListPhotos(product.ProductID);
@@ -132,25 +133,29 @@ namespace SV21T1080027.Web.Controllers
                 return View("Edit", productDetail);
             }
 
+
+
             if (uploadPhoto != null && uploadPhoto.ContentType.Contains("image"))
             {
-                var fileName = Path.GetFileName(product.ProductID.ToString() + Path.GetExtension(uploadPhoto.FileName));
-                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/products", fileName);
+                string fileName = $"{DateTime.Now.Ticks}_{uploadPhoto.FileName}"; //Tên file sẽ lưu
+                string folder = Path.Combine(ApplicationContext.WebRootPath, @"images\products"); //đường dẫn đến thư mục lưu file
+                string filePath = Path.Combine(folder, fileName); //Đường dẫn đến file cần lưu D:\images\employees\photo.png
 
                 Console.WriteLine(fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
-                    await uploadPhoto.CopyToAsync(stream);
+                    uploadPhoto.CopyTo(stream);
                 }
 
-                product.Photo = $"/images/products/{fileName}";
+                product.Photo = fileName;
             }
 
             if (product.ProductID == 0)
             {
                 product.ProductID = ProductDataService.Add(product);
-            } else
+            }
+            else
             {
                 ProductDataService.Update(product);
             }
@@ -277,7 +282,7 @@ namespace SV21T1080027.Web.Controllers
                     await uploadPhoto.CopyToAsync(stream);
                 }
 
-                productPhoto.Photo = $"/images/products/img/{fileName}";
+                productPhoto.Photo = fileName;
             }
 
             ProductDataService.UpdatePhoto(productPhoto);

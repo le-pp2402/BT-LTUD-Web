@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Tokens;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
 using SV21T1080027.Web.Models;
@@ -74,6 +75,17 @@ namespace SV21T1080027.Web.Controllers
         [HttpPost]
         public IActionResult Save(Category category)
         {
+            if (category.CategoryName.IsNullOrEmpty())
+            {
+                ModelState.AddModelError(nameof(category.CategoryName), "Tên loại hàng không được để trống");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Title = (category.CategoryID == 0) ? "Tạo loại hàng" : "Chỉnh sửa loại hàng";
+                return View("Edit", category);
+            }
+
             if (category.CategoryID == 0)
             {
                 CommonDataService.AddCategory(category);

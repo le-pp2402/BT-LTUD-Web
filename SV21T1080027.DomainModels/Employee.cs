@@ -13,6 +13,6 @@ namespace SV21T1080027.DomainModels
         public string Phone { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string Photo { get; set; } = string.Empty;
-        public bool IsWorking { get; set; } = true;
+        public bool IsWorking { get; set; } = false;
     }
 }

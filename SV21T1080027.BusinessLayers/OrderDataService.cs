@@ -134,7 +134,7 @@ namespace SV21T1080027.BusinessLayers
                 data.ShippedTime = DateTime.Now;
                 return orderDB.Update(data);
             }
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -217,6 +217,24 @@ namespace SV21T1080027.BusinessLayers
             if (data.Status == Constants.ORDER_INIT || data.Status == Constants.ORDER_ACCEPTED)
             {
                 return orderDB.DeleteDetail(orderID, productID);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Cập nhật địa chỉ giao hàng của một đơn hàng
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <param name="DeliveryProvince"></param>
+        /// <param name="DeliveryAddress"></param>
+        /// <returns></returns>
+        public static bool UpdateAddress(int OrderID, String DeliveryProvince, String DeliveryAddress)
+        {
+            Order? order = orderDB.Get(OrderID);
+            if (order == null) return false;
+            if (order.Status == Constants.ORDER_INIT || order.Status == Constants.ORDER_ACCEPTED)
+            {
+                return orderDB.UpdateAddress(OrderID, DeliveryProvince, DeliveryAddress);
             }
             return false;
         }

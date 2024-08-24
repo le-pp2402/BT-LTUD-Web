@@ -44,7 +44,7 @@ namespace SV21T1080027.DataLayers.SQLServer
                     DeliveryProvince = data.DeliveryProvince,
                     DeliveryAddress = data.DeliveryAddress,
                     EmployeeID = data.EmployeeID,
-                    Status = data.Status
+                    Status = Constants.ORDER_INIT
                 };
 
                 id = cn.ExecuteScalar<int>(sql, param, commandType: System.Data.CommandType.Text);
@@ -88,6 +88,26 @@ namespace SV21T1080027.DataLayers.SQLServer
             }
         }
 
+        public bool UpdateAddress(int OrderID, String DeliveryProvince, String DeliveryAddress)
+        {
+            bool result = false;
+            using (var cn = OpenConnection())
+            {
+                var sql = @"UPDATE Orders 
+                            SET DeliveryProvince = @DeliveryProvince, DeliveryAddress = @DeliveryAddress
+                            WHERE OrderID = @OrderID    
+                            ";
+                var param = new
+                {
+                    DeliveryProvince = DeliveryProvince,
+                    DeliveryAddress = DeliveryAddress,
+                    OrderID = OrderID
+                };
+                result = cn.Execute(sql, param, commandType: System.Data.CommandType.Text) > 0;
+            }
+            return result;
+        }
+
         public bool Delete(int orderID)
         {
             bool result = false;
@@ -114,7 +134,8 @@ namespace SV21T1080027.DataLayers.SQLServer
                             WHERE OrderID = @OrderID AND ProductID = @ProductID";
                 var param = new
                 {
-                    OrderID = orderID
+                    OrderID = orderID,
+                    ProductID = productID
                 };
                 result = cn.Execute(sql, param, commandType: System.Data.CommandType.Text) > 0;
             }
@@ -163,6 +184,7 @@ namespace SV21T1080027.DataLayers.SQLServer
                 var param = new
                 {
                     OrderID = orderID,
+                    ProductID = productID
                 };
 
                 result = cn.QueryFirstOrDefault<OrderDetail?>(sql, param, commandType: System.Data.CommandType.Text);

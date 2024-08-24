@@ -89,7 +89,7 @@ namespace SV21T1080027.Web
                 Text = "-- Chọn khách hàng --"
             });
             int rowCount;
-            foreach (var item in CommonDataService.ListOfCustomers(out rowCount))
+            foreach (var item in CommonDataService.ListOfCustomers(out rowCount, 1, 0, ""))
             {
                 list.Add(new SelectListItem()
                 {
@@ -109,7 +109,7 @@ namespace SV21T1080027.Web
                 Text = "-- Chọn người giao hàng --"
             });
             int rowCount;
-            foreach (var item in CommonDataService.ListOfShippers(out rowCount))
+            foreach (var item in CommonDataService.ListOfShippers(out rowCount, 0, 0, ""))
             {
                 list.Add(new SelectListItem()
                 {

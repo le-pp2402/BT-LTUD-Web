@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SV21T1080027.BusinessLayers;
 using SV21T1080027.DomainModels;
 using SV21T1080027.Web.Models;
+using System.Data;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 namespace SV21T1080027.Web.Controllers
@@ -101,17 +102,33 @@ namespace SV21T1080027.Web.Controllers
                 employee.Photo = fileName;
             }
 
-            if (!ModelState.IsValid)
-                return View("Edit", employee);
+            if (birthDate == null || birthDate.Value.Year <= 1790 || birthDate.Value.Year > DateTime.Now.Year)
+            {
+                ModelState.AddModelError("BirthDateInput", "Ngày sinh không hợp lệ [1790, current]");
+            }
 
-            if (employee.EmployeeID == 0)
+            if (!ModelState.IsValid)
+            return View("Edit", employee);
+
+            try
             {
-                CommonDataService.AddEmployee(employee);
+                if (employee.EmployeeID == 0)
+                {
+                    
+                        CommonDataService.AddEmployee(employee);       
+                }
+                else
+                {
+                    CommonDataService.UpdateEmployee(employee);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                CommonDataService.UpdateEmployee(employee);
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError(nameof(employee.Email), "Email này đã tồn tại");
+                return View("Edit", employee);
             }
+
             return RedirectToAction("Index");
         }
 

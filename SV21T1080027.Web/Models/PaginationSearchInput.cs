@@ -13,7 +13,11 @@ namespace SV21T1080027.Web.Models
     {
         public int CategoryID { get; set; }
         public int SupplierID { get; set; }
-        public int MinPrice { get; set; }
-        public int MaxPrice { get; set; }
+        public int MinPrice {
+            get; set;
+        }
+        public int MaxPrice {
+            get; set;
+        }
     } 
 }

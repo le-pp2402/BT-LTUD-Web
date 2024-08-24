@@ -26,16 +26,18 @@
             <div class="form-group">
                 <label class="form-label">Email:</label>
                 <input type="email" class="form-control" name="@nameof(Model.Email)" value="@Model.Email"/>
+                @Html.ValidationMessageFor(m => m.Email)
             </div>
 
             <div class="form-group">
                 <label class="form-label">Địa chỉ:</label>
                 <input type="text" class="form-control" name="@nameof(Model.Address)" value="@Model.Address"/>
+                @Html.ValidationMessageFor(m => m.Address)
             </div>
 
             <div class="form-group">
                 <label class="form-label">Tỉnh/Thành</label>
-                @Html.DropDownListFor(m=>m.Province, SelectListHelper.Provinces(), new { @class="form-control"})
+                @Html.DropDownListFor(m => m.Province, SelectListHelper.Provinces(), new { @class = "form-control select2" })
                 @Html.ValidationMessageFor(m => m.Province)
             </div>
 

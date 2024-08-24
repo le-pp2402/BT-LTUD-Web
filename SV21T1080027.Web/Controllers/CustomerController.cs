@@ -93,14 +93,23 @@ namespace SV21T1080027.Web.Controllers
                 return View("Edit", customer);
             }
 
-            if (customer.CustomerID == 0)
+            try
             {
-                CommonDataService.AddCustomer(customer);
-            } else
+                if (customer.CustomerID == 0)
+                {
+                    CommonDataService.AddCustomer(customer);
+                }
+                else
+                {
+                    CommonDataService.UpdateCustomer(customer);
+                }
+            } catch (Exception ex)
             {
-                Console.WriteLine("cap nhat id = " + customer.CustomerID);
-                CommonDataService.UpdateCustomer(customer);
+                Console.WriteLine(ex.Message);
+                ModelState.AddModelError(nameof(customer.Email), "Email này đã tồn tại");
+                return View("Edit", customer);
             }
+            
             return RedirectToAction("Index");
         }
 

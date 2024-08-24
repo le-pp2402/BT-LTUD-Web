@@ -51,5 +51,14 @@ namespace SV21T1080027.DataLayers
         /// Xóa 1 mặt hàng ra khỏi đơn hàng
         /// </summary>
         bool DeleteDetail(int orderID, int productID);
+
+        /// <summary>
+        /// Cập nhật địa chỉ giao hàng của đơn hàng
+        /// </summary>
+        /// <param name="OrderID"></param>
+        /// <param name="DeliveryProvince"></param>
+        /// <param name="DeliveryAddress"></param>
+        /// <returns></returns>
+        public bool UpdateAddress(int OrderID, String DeliveryProvince, String DeliveryAddress);
     }
 }

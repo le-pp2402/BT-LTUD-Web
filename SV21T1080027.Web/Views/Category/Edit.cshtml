@@ -6,6 +6,7 @@
             <div class="form-group">
                 <label class="form-label">Tên loại hàng: </label>
                 <input type="text" name="@nameof(Model.CategoryName)" value = "@Model.CategoryName" class="form-control" autofocus/>
+                @Html.ValidationMessage(nameof(Model.CategoryName))
             </div>
 
             <div class="form-group">
